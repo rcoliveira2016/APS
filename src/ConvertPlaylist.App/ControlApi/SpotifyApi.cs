@@ -10,7 +10,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
-namespace SpotifyAPI.Example.ControlApi
+namespace ConvertPlaylist.App.ControlApi
 {
     public sealed class SpotifyApi : IApi
     {

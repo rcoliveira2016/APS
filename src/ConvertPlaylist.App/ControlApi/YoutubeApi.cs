@@ -13,7 +13,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace ConvertPlaylist.App
+namespace ConvertPlaylist.App.ControlApi
 {
     public class YoutubeApi : IApi
     {
