@@ -37,7 +37,14 @@
             this.ltvAddItens = new System.Windows.Forms.ListView();
             this.columnHeader2 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.columnHeader3 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.groupBox2 = new System.Windows.Forms.GroupBox();
+            this.lblAtual = new System.Windows.Forms.Label();
+            this.label4 = new System.Windows.Forms.Label();
+            this.lblTotal = new System.Windows.Forms.Label();
+            this.label3 = new System.Windows.Forms.Label();
+            this.pBarPlaylist = new System.Windows.Forms.ProgressBar();
             this.groupBox1.SuspendLayout();
+            this.groupBox2.SuspendLayout();
             this.SuspendLayout();
             // 
             // label1
@@ -87,7 +94,7 @@
             // groupBox1
             // 
             this.groupBox1.Controls.Add(this.ltvAddItens);
-            this.groupBox1.Location = new System.Drawing.Point(13, 105);
+            this.groupBox1.Location = new System.Drawing.Point(13, 149);
             this.groupBox1.Name = "groupBox1";
             this.groupBox1.Size = new System.Drawing.Size(450, 205);
             this.groupBox1.TabIndex = 5;
@@ -117,11 +124,70 @@
             this.columnHeader3.Text = "Adicionado";
             this.columnHeader3.Width = 117;
             // 
+            // groupBox2
+            // 
+            this.groupBox2.Controls.Add(this.pBarPlaylist);
+            this.groupBox2.Controls.Add(this.lblAtual);
+            this.groupBox2.Controls.Add(this.label4);
+            this.groupBox2.Controls.Add(this.lblTotal);
+            this.groupBox2.Controls.Add(this.label3);
+            this.groupBox2.Location = new System.Drawing.Point(16, 105);
+            this.groupBox2.Name = "groupBox2";
+            this.groupBox2.Size = new System.Drawing.Size(447, 38);
+            this.groupBox2.TabIndex = 6;
+            this.groupBox2.TabStop = false;
+            this.groupBox2.Text = "Estado";
+            // 
+            // lblAtual
+            // 
+            this.lblAtual.AutoSize = true;
+            this.lblAtual.Location = new System.Drawing.Point(106, 16);
+            this.lblAtual.Name = "lblAtual";
+            this.lblAtual.Size = new System.Drawing.Size(0, 13);
+            this.lblAtual.TabIndex = 4;
+            // 
+            // label4
+            // 
+            this.label4.AutoSize = true;
+            this.label4.Location = new System.Drawing.Point(77, 16);
+            this.label4.Name = "label4";
+            this.label4.Size = new System.Drawing.Size(34, 13);
+            this.label4.TabIndex = 3;
+            this.label4.Text = "Atual:";
+            // 
+            // lblTotal
+            // 
+            this.lblTotal.AutoSize = true;
+            this.lblTotal.Location = new System.Drawing.Point(41, 16);
+            this.lblTotal.Name = "lblTotal";
+            this.lblTotal.Size = new System.Drawing.Size(0, 13);
+            this.lblTotal.TabIndex = 2;
+            // 
+            // label3
+            // 
+            this.label3.AutoSize = true;
+            this.label3.Location = new System.Drawing.Point(9, 16);
+            this.label3.Name = "label3";
+            this.label3.Size = new System.Drawing.Size(34, 13);
+            this.label3.TabIndex = 1;
+            this.label3.Text = "Total:";
+            // 
+            // pBarPlaylist
+            // 
+            this.pBarPlaylist.Location = new System.Drawing.Point(141, 16);
+            this.pBarPlaylist.MarqueeAnimationSpeed = 1;
+            this.pBarPlaylist.Maximum = 0;
+            this.pBarPlaylist.Name = "pBarPlaylist";
+            this.pBarPlaylist.Size = new System.Drawing.Size(300, 12);
+            this.pBarPlaylist.Step = 1;
+            this.pBarPlaylist.TabIndex = 5;
+            // 
             // ExportPlaylist
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(475, 322);
+            this.ClientSize = new System.Drawing.Size(475, 366);
+            this.Controls.Add(this.groupBox2);
             this.Controls.Add(this.groupBox1);
             this.Controls.Add(this.btnExportar);
             this.Controls.Add(this.txtNewPlaylist);
@@ -133,7 +199,10 @@
             this.Name = "ExportPlaylist";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Exportar Playlist";
+            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.ExportPlaylist_FormClosing);
             this.groupBox1.ResumeLayout(false);
+            this.groupBox2.ResumeLayout(false);
+            this.groupBox2.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -150,5 +219,11 @@
         private System.Windows.Forms.ListView ltvAddItens;
         private System.Windows.Forms.ColumnHeader columnHeader2;
         private System.Windows.Forms.ColumnHeader columnHeader3;
+        private System.Windows.Forms.GroupBox groupBox2;
+        private System.Windows.Forms.Label lblAtual;
+        private System.Windows.Forms.Label label4;
+        private System.Windows.Forms.Label lblTotal;
+        private System.Windows.Forms.Label label3;
+        private System.Windows.Forms.ProgressBar pBarPlaylist;
     }
 }

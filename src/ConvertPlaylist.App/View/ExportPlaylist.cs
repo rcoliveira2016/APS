@@ -21,7 +21,8 @@ namespace ConvertPlaylist.App.View
 
         #region Delegate
         delegate void SetSimplePlaylistCallback(ICollection<SimplePlaylist> list);
-        delegate void SetStringBoolCallback(string text, bool isTrue);
+        delegate void SetStringBoolCallback(string text, bool isTrue=true);
+        delegate void SetStringCallback(string text);
         delegate void SetCallback();
         delegate void SetListStringCallback(ICollection<string> list);
         #endregion
@@ -51,14 +52,24 @@ namespace ConvertPlaylist.App.View
             }), new object[] { playlists });
         }
 
-        private async void RunCreateList(string idPlaylist, string name)
+        private async void RunCreateList(string idPlaylist, string name, string idUser)
         {
-            var listNameMusic = await spotifyApi.GetFullNamePlaylistFullTracksAll(idPlaylist);
+            var listNameMusic = await spotifyApi.GetFullNamePlaylistFullTracksAll(idPlaylist, idUser);
+
+
+            if (!listNameMusic.Any())
+                return;           
+
 
             var youtube = new YoutubeApi();
 
-            if (!listNameMusic.Any())
-                return;
+            var listCount = 0;
+
+            Invoke(new SetStringCallback((string text) =>
+            {
+                lblTotal.Text = text;
+                pBarPlaylist.Maximum = Convert.ToInt32(text);
+            }), new object[] { listNameMusic.Count().ToString() });
 
             youtube.Login();
 
@@ -66,12 +77,16 @@ namespace ConvertPlaylist.App.View
 
             foreach (var music in listNameMusic)
             {
+
+                listCount++;
+
                 var returnAddItem = await youtube.AddItemPlaylist(idNewPlaylist, music);
 
                 var returnMusic = returnAddItem ? music : $"{music} -- não foi encontrada";
 
                 Invoke(new SetStringBoolCallback((string text, bool found) =>
-                {
+                {                      
+
                     ltvAddItens.Items.Add(new ListViewItem()
                     {
                         Text = text,
@@ -80,6 +95,11 @@ namespace ConvertPlaylist.App.View
 
                 }), new object[] { returnMusic, returnAddItem });
 
+                Invoke(new SetStringCallback((string text) =>
+                {
+                    pBarPlaylist.PerformStep();
+                    lblAtual.Text = text;
+                }), new object[] { listCount.ToString() });
 
             }
 
@@ -100,7 +120,7 @@ namespace ConvertPlaylist.App.View
 
             var playlist = cbxPlaylist.SelectedItem as SimplePlaylist;
             btnExportar.Enabled = false;
-            Task.Run(() => RunCreateList(playlist.Id, txtNewPlaylist.Text)).Wait();
+            Task.Run(() => RunCreateList(playlist.Id, txtNewPlaylist.Text, playlist.Owner.Id)).Wait();
         }
 
         private void cbxPlaylist_SelectedIndexChanged(object sender, EventArgs e)
@@ -108,7 +128,12 @@ namespace ConvertPlaylist.App.View
             txtNewPlaylist.Text = (cbxPlaylist.SelectedItem as SimplePlaylist).ToString();
         }
 
-        #endregion
+        private void ExportPlaylist_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            e.Cancel = !btnExportar.Enabled;
+        }
 
+
+        #endregion
     }
 }
