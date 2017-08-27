@@ -15,7 +15,10 @@ namespace ConvertPlaylist.App.ControlApi
     public sealed class SpotifyApi : IApi
     {
         private SpotifyWebAPI spotifyWebApi;
+
         private PrivateProfile privateProfile;
+
+        public bool logged { get { return privateProfile != null; } }
 
         public async void Login()
         {
@@ -61,13 +64,58 @@ namespace ConvertPlaylist.App.ControlApi
         public async Task<List<SimplePlaylist>> GetPlaylists()
         {
             PrivateProfile _profile = GetUserProflie().Result;
-            Paging<SimplePlaylist> playlists = spotifyWebApi.GetUserPlaylists(_profile.Id);
+            Paging<SimplePlaylist> playlists = await spotifyWebApi.GetUserPlaylistsAsync(_profile.Id);
             List<SimplePlaylist> list = playlists.Items.ToList();
 
             while (playlists.Next != null)
             {
                 playlists = spotifyWebApi.GetUserPlaylists(_profile.Id, 20, playlists.Offset + playlists.Limit);
                 list.AddRange(playlists.Items);
+            }
+
+            return list;
+        }
+
+        public async Task<List<PlaylistTrack>> GetPlaylistTracksAll(string idPlaylist)
+        {
+            PrivateProfile _profile = GetUserProflie().Result;
+            Paging<PlaylistTrack> playlists = await spotifyWebApi.GetPlaylistTracksAsync(_profile.Id, idPlaylist, limit:100);
+            List<PlaylistTrack> list = playlists.Items.ToList();
+
+            while (playlists.Next != null)
+            {
+                playlists = await spotifyWebApi.GetPlaylistTracksAsync(_profile.Id,idPlaylist, limit:100, offset:(playlists.Offset + playlists.Limit));
+                list.AddRange(playlists.Items);
+            }
+
+            return list;
+        }
+
+        public async Task<List<FullTrack>> GetPlaylistFullTracksAll(string idPlaylist)
+        {
+            PrivateProfile _profile = GetUserProflie().Result;
+            Paging<PlaylistTrack> playlists = await spotifyWebApi.GetPlaylistTracksAsync(_profile.Id, idPlaylist, limit: 100);
+            List<FullTrack> list = playlists.Items.Select(x => x.Track).ToList();
+
+            while (playlists.Next != null)
+            {
+                playlists = await spotifyWebApi.GetPlaylistTracksAsync(_profile.Id, idPlaylist, limit: 100, offset: (playlists.Offset + playlists.Limit));
+                list.AddRange(playlists.Items.Select(x=> x.Track));
+            }
+
+            return list;
+        }
+
+        public async Task<List<string>> GetFullNamePlaylistFullTracksAll(string idPlaylist)
+        {
+            PrivateProfile _profile = GetUserProflie().Result;
+            Paging<PlaylistTrack> playlists = await spotifyWebApi.GetPlaylistTracksAsync(_profile.Id, idPlaylist, limit: 100);
+            List<string> list = playlists.Items.Select(x => $" {x.Track.Name} - {x.Track.Artists.Select(y=> y.Name).Aggregate((i,e)=> $"{i} {e} ") }" ).ToList();
+
+            while (playlists.Next != null)
+            {
+                playlists = await spotifyWebApi.GetPlaylistTracksAsync(_profile.Id, idPlaylist, limit: 100, offset: (playlists.Offset + playlists.Limit));
+                list.AddRange(playlists.Items.Select(x => $" {x.Track.Name} - {x.Track.Artists.Select(y => y.Name).Aggregate((i, e) => $"{i} {e} ") }").ToList());
             }
 
             return list;

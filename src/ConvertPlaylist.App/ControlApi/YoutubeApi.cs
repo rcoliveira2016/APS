@@ -23,7 +23,7 @@ namespace ConvertPlaylist.App.ControlApi
         public async void Login()
         {
             string executableLocation = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
-            string camilhoJson = Path.Combine(executableLocation, "/Content/client_secret.json");
+            string camilhoJson = Path.Combine(executableLocation, "./Content/client_secret.json");
 
             UserCredential credential;
             using (var stream = new FileStream(camilhoJson, FileMode.Open, FileAccess.Read))
@@ -45,35 +45,98 @@ namespace ConvertPlaylist.App.ControlApi
                 ApplicationName = "Convert Playlist"
             });
 
+            
+        }
 
-            // Create a new, private playlist in the authorized user's channel.
-            /*var newPlaylist = new Playlist();
+        private async Task<string> RunSearch(string query)
+        {
+            var searchListRequest = youtubeService.Search.List("snippet");
+            searchListRequest.Q = query; // Replace with your search term.
+            searchListRequest.MaxResults = 1;
+            searchListRequest.Type = "video";
+
+            var searchListResponse = await searchListRequest.ExecuteAsync();
+
+            return searchListResponse.Items.FirstOrDefault()?.Id?.VideoId;
+
+        }
+
+        private async Task<ICollection<string>> RunCreatePlaylist(ICollection<string> listNameMusic, string name) {
+
+            var listNotFind = new List<string>();
+
+            var newPlaylist = new Playlist();
             newPlaylist.Snippet = new PlaylistSnippet();
-            newPlaylist.Snippet.Title = "Test Playlist";
-            newPlaylist.Snippet.Description = "A playlist created with the YouTube API v3";
+            newPlaylist.Snippet.Title = name;
             newPlaylist.Status = new PlaylistStatus();
             newPlaylist.Status.PrivacyStatus = "public";
             newPlaylist = await youtubeService.Playlists.Insert(newPlaylist, "snippet,status").ExecuteAsync();
 
-            var searchListRequest = youtubeService.Search.List("snippet");
-            searchListRequest.Q = "Menorias"; // Replace with your search term.
-            searchListRequest.MaxResults = 50;
-            searchListRequest.MaxResults = 5;
-            searchListRequest.Type = "video";
 
-            // Call the search.list method to retrieve results matching the specified query term.
-            var searchListResponse = await searchListRequest.ExecuteAsync();
 
-            // Add a video to the newly created playlist.
-            var newPlaylistItem = new PlaylistItem();
-            newPlaylistItem.Snippet = new PlaylistItemSnippet();
-            newPlaylistItem.Snippet.PlaylistId = newPlaylist.Id;
-            newPlaylistItem.Snippet.ResourceId = new ResourceId();
-            newPlaylistItem.Snippet.ResourceId.Kind = "youtube#video";
-            newPlaylistItem.Snippet.ResourceId.VideoId = searchListResponse.Items.FirstOrDefault().Id.VideoId;
-            newPlaylistItem = await youtubeService.PlaylistItems.Insert(newPlaylistItem, "snippet").ExecuteAsync();*/
+            foreach (var music in listNameMusic)
+            {
 
+                string idMusic = await RunSearch(music);
+                if (!string.IsNullOrEmpty(idMusic))
+                {
+
+                    var newPlaylistItem = new PlaylistItem();
+                    newPlaylistItem.Snippet = new PlaylistItemSnippet
+                    {
+                        PlaylistId = newPlaylist.Id,
+                        ResourceId = new ResourceId()
+                    };
+                    newPlaylistItem.Snippet.ResourceId.Kind = "youtube#video";
+                    newPlaylistItem.Snippet.ResourceId.VideoId = idMusic;
+                    newPlaylistItem = await youtubeService.PlaylistItems.Insert(newPlaylistItem, "snippet").ExecuteAsync();
+                }
+                else {
+                    listNotFind.Add(music);
+                }
+                
+                
+            }
+
+            return listNameMusic;
+        }
+
+        public async Task<string> CreatePlaylist(string name) {            
+
+            var newPlaylist = new Playlist();
+            newPlaylist.Snippet = new PlaylistSnippet();
+            newPlaylist.Snippet.Title = name;
+            newPlaylist.Status = new PlaylistStatus();
+            newPlaylist.Status.PrivacyStatus = "public";
+            newPlaylist = await youtubeService.Playlists.Insert(newPlaylist, "snippet,status").ExecuteAsync();
+
+            return newPlaylist.Id;
+        }
+
+        public async Task<bool> AddItemPlaylist(string idPlaylist, string music)
+        {
+
+            string idMusic = await RunSearch(music);
+            if (string.IsNullOrEmpty(idMusic))
+                return false;
             
+            var newPlaylistItem = new PlaylistItem();
+            newPlaylistItem.Snippet = new PlaylistItemSnippet
+            {
+                PlaylistId = idPlaylist,
+                ResourceId = new ResourceId()
+            };
+            newPlaylistItem.Snippet.ResourceId.Kind = "youtube#video";
+            newPlaylistItem.Snippet.ResourceId.VideoId = await RunSearch(music);
+            newPlaylistItem = await youtubeService.PlaylistItems.Insert(newPlaylistItem, "snippet").ExecuteAsync();
+
+            return true;
+        }
+
+        public ICollection<string> CreatePlaylistByListMusic(ICollection<string> listNameMusic, string name) {
+
+            return Task.Run(() => RunCreatePlaylist(listNameMusic, name)).Result;
+
         }
     }
 }

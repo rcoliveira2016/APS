@@ -16,59 +16,27 @@ namespace ConvertPlaylist.App.View
 {
     public partial class WebControl : UserControl
     {
-        private SpotifyApi spotifyApi;
 
+        #region Attribute
+        private SpotifyApi spotifyApi; 
+        #endregion
 
+        #region Delegete
         delegate void SetTextCallback(string texto);
         delegate void SetSimplePlaylistCallback(ICollection<SimplePlaylist> list);
+        delegate void SetFullTrackCallback(ICollection<FullTrack> list);
+        #endregion
 
-
+        #region Construtor
         public WebControl()
         {
             InitializeComponent();
             spotifyApi = new SpotifyApi();
-        }
+        } 
+        #endregion
 
-        /*private async void InitialSetup()
-        {
-            if (InvokeRequired)
-            {
-                Invoke(new Action(InitialSetup));
-                return;
-            }
-            
-            _profile = await _spotify.GetPrivateProfileAsync();
-
-            _savedTracks = GetSavedTracks();
-            savedTracksCountLabel.Text = _savedTracks.Count.ToString();
-            _savedTracks.ForEach(track => savedTracksListView.Items.Add(new ListViewItem()
-            {
-                Text = track.Name,
-                SubItems = { string.Join(",", track.Artists.Select(source => source.Name)), track.Album.Name }
-            }));
-
-            _playlists = GetPlaylists();
-            playlistsCountLabel.Text = _playlists.Count.ToString();
-            _playlists.ForEach(playlist => playlistsListBox.Items.Add(playlist.Name));
-
-            displayNameLabel.Text = _profile.DisplayName;
-            countryLabel.Text = _profile.Country;
-            emailLabel.Text = _profile.Email;
-            accountLabel.Text = _profile.Product;
-
-            if (_profile.Images != null && _profile.Images.Count > 0)
-            {
-                using (WebClient wc = new WebClient())
-                {
-                    byte[] imageBytes = await wc.DownloadDataTaskAsync(new Uri(_profile.Images[0].Url));
-                    using (MemoryStream stream = new MemoryStream(imageBytes))
-                        avatarPictureBox.Image = Image.FromStream(stream);
-                }
-            }
-        }*/
-
-
-        private void callBack(Delegate action, object value)
+        #region Privete Methods
+        private void callBack(object value, Delegate action)
         {
             this.Invoke(action, new object[] { value });
         }
@@ -79,12 +47,25 @@ namespace ConvertPlaylist.App.View
 
             var profileTask = await spotifyApi.GetUserProflie();
 
-            this.callBack(new SetTextCallback((string texto) => displayNameLabel.Text = texto), profileTask.DisplayName);
+            this.callBack(profileTask.DisplayName, new SetTextCallback((string texto) =>
+            {
+                displayNameLabel.Text = texto;
+                tspBtnLogarSpotify.Enabled = false;
+                tspBtnExportPlaylist.Enabled = true;
+            }));
 
+            this.callBack(profileTask.Country, new SetTextCallback((string texto) =>
+                    countryLabel.Text = texto
+                ));
 
-            /*countryLabel.Text = profileTask.Country;
-            emailLabel.Text = profileTask.Email;
-            accountLabel.Text = profileTask.Product;
+            this.callBack(profileTask.Email, new SetTextCallback((string texto) =>
+                    emailLabel.Text = texto
+                ));
+
+            this.callBack(profileTask.Product, new SetTextCallback((string texto) =>
+                    accountLabel.Text = texto
+                ));
+
 
             if (profileTask.Images != null && profileTask.Images.Count > 0)
             {
@@ -96,34 +77,61 @@ namespace ConvertPlaylist.App.View
                 }
             }
 
-            var _savedTracks = await spotifyApi.GetSavedTracks();
-            savedTracksCountLabel.Text = _savedTracks.Count.ToString();
-            _savedTracks.ForEach(track => savedTracksListView.Items.Add(new ListViewItem()
-            {
-                Text = track.Name,
-                SubItems = { string.Join(",", track.Artists.Select(source => source.Name)), track.Album.Name }
-            }));*/
-
-            var playlists = await spotifyApi.GetPlaylists();
-
-            var d = new SetSimplePlaylistCallback((ICollection<SimplePlaylist> lisa) => {
-                playlistsCountLabel.Text = playlists.Count.ToString();
-                playlists.ForEach(playlist => playlistsListBox.Items.Add(playlist.Name));
-            });
-
-            this.callBack(d, playlists);
-            
-
         }
 
-        private void DefinirTexto(string texto)
+        private async void RunPlaylist()
         {
-            displayNameLabel.Text = texto;
+            var playlists = await spotifyApi.GetPlaylists();
+            this.callBack(playlists, new SetSimplePlaylistCallback((ICollection<SimplePlaylist> lisa) =>
+            {
+
+
+                playlists.ForEach(playlist => {
+                    var users = playlist.Collaborative ? playlist.Owner.Id :playlist.Owner.DisplayName;
+                    playlistsListBox.Items.Add(new ListViewItem()
+                    {
+                        Text = playlist.Name,
+                        SubItems = { users }
+                    });
+                });
+
+            }));
         }
 
+        private async void RunSavedTrack()
+        {
+            var _savedTracks = await spotifyApi.GetSavedTracks();
+            this.callBack(_savedTracks, new SetFullTrackCallback((ICollection<FullTrack> lisa) =>
+            {
+                _savedTracks.ToList().ForEach(track => savedTracksListView.Items.Add(new ListViewItem()
+                {
+                    Text = track.Name,
+                    SubItems = { string.Join(",", track.Artists.Select(source => source.Name)), track.Album.Name }
+                }));
+
+                this.tspLabelState.Text = "";
+            }));
+        } 
+        #endregion
+
+        #region Events Forms
         private void tspBtnLogarSpotify_Click(object sender, EventArgs e)
         {
-            Task.Run(() => RunAuthentication()).Wait();
+            if (!spotifyApi.logged)
+            {
+                this.tspLabelState.Text = "Carregando..";
+                Task.Run(() => RunAuthentication()).Wait();
+                Task.Run(() => RunPlaylist()).Wait();
+                Task.Run(() => RunSavedTrack()).Wait();                
+            }
         }
+
+        private void tspBtnExportPlaylist_Click(object sender, EventArgs e)
+        {
+            var view = new ExportPlaylist(spotifyApi);
+
+            view.ShowDialog();
+        }
+        #endregion
     }
 }

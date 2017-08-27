@@ -56,3 +56,5 @@ C:\Users\roram\Documents\desenvolvimento\C#\APS\SpotifyAPI-NET-master\src\Conver
 C:\Users\roram\Documents\desenvolvimento\C#\APS\SpotifyAPI-NET-master\src\ConvertPlaylist.App\obj\Debug\ConvertPlaylist.App.csproj.CoreCompileInputs.cache
 C:\Users\roram\Documents\desenvolvimento\C#\APS\SpotifyAPI-NET-master\src\ConvertPlaylist.App\obj\Debug\ConvertPlaylist.App.exe
 C:\Users\roram\Documents\desenvolvimento\C#\APS\SpotifyAPI-NET-master\src\ConvertPlaylist.App\obj\Debug\ConvertPlaylist.App.pdb
+C:\Users\roram\Documents\desenvolvimento\C#\APS\SpotifyAPI-NET-master\src\ConvertPlaylist.App\obj\Debug\ConvertPlaylist.App.View.ExportPlaylist.resources
+C:\Users\roram\Documents\desenvolvimento\C#\APS\SpotifyAPI-NET-master\src\ConvertPlaylist.App\obj\Debug\ConvertPlaylist.App.View.LoadTransition.resources
