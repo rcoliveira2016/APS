@@ -9,5 +9,6 @@ namespace SpotifyAPI.Example.Interface.Core
     public interface IApi
     {
         void Login();
+        void Logout();
     }
 }

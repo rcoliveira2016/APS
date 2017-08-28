@@ -136,6 +136,11 @@ namespace ConvertPlaylist.App.ControlApi
             return Task.Run(() => RunCreatePlaylist(listNameMusic, name)).Result;
 
         }
+
+        public void Logout()
+        {
+            
+        }
     }
 }
 
