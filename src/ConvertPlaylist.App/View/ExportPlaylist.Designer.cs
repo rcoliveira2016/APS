@@ -38,11 +38,11 @@
             this.columnHeader2 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.columnHeader3 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.groupBox2 = new System.Windows.Forms.GroupBox();
+            this.pBarPlaylist = new System.Windows.Forms.ProgressBar();
             this.lblAtual = new System.Windows.Forms.Label();
             this.label4 = new System.Windows.Forms.Label();
             this.lblTotal = new System.Windows.Forms.Label();
             this.label3 = new System.Windows.Forms.Label();
-            this.pBarPlaylist = new System.Windows.Forms.ProgressBar();
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
             this.SuspendLayout();
@@ -138,6 +138,16 @@
             this.groupBox2.TabStop = false;
             this.groupBox2.Text = "Estado";
             // 
+            // pBarPlaylist
+            // 
+            this.pBarPlaylist.Location = new System.Drawing.Point(141, 16);
+            this.pBarPlaylist.MarqueeAnimationSpeed = 1;
+            this.pBarPlaylist.Maximum = 0;
+            this.pBarPlaylist.Name = "pBarPlaylist";
+            this.pBarPlaylist.Size = new System.Drawing.Size(300, 12);
+            this.pBarPlaylist.Step = 1;
+            this.pBarPlaylist.TabIndex = 5;
+            // 
             // lblAtual
             // 
             this.lblAtual.AutoSize = true;
@@ -171,16 +181,6 @@
             this.label3.Size = new System.Drawing.Size(34, 13);
             this.label3.TabIndex = 1;
             this.label3.Text = "Total:";
-            // 
-            // pBarPlaylist
-            // 
-            this.pBarPlaylist.Location = new System.Drawing.Point(141, 16);
-            this.pBarPlaylist.MarqueeAnimationSpeed = 1;
-            this.pBarPlaylist.Maximum = 0;
-            this.pBarPlaylist.Name = "pBarPlaylist";
-            this.pBarPlaylist.Size = new System.Drawing.Size(300, 12);
-            this.pBarPlaylist.Step = 1;
-            this.pBarPlaylist.TabIndex = 5;
             // 
             // ExportPlaylist
             // 

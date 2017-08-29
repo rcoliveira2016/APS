@@ -24,7 +24,7 @@ namespace ConvertPlaylist.App.ControlApi
             spotifyWebApi.Dispose();
         }
 
-        public async void Login()
+        public async Task<bool> Login()
         {
             WebAPIFactory webApiFactory = new WebAPIFactory(
                 "http://localhost",
@@ -40,8 +40,10 @@ namespace ConvertPlaylist.App.ControlApi
             }
             catch (Exception ex)
             {
-                MessageBox.Show(ex.Message);
+                return false;
             }
+
+            return (spotifyWebApi != null);
         }
 
         public async Task<PrivateProfile> GetUserProflie()

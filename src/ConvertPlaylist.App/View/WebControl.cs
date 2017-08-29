@@ -43,7 +43,10 @@ namespace ConvertPlaylist.App.View
 
         private async void RunAuthentication()
         {
-            spotifyApi.Login();
+            var logged= await spotifyApi.Login();
+
+            if (!logged)
+                return;
 
             var profileTask = await spotifyApi.GetUserProflie();
 
@@ -117,12 +120,19 @@ namespace ConvertPlaylist.App.View
         #region Events Forms
         private void tspBtnLogarSpotify_Click(object sender, EventArgs e)
         {
-            if (!spotifyApi.logged)
+            try
             {
-                this.tspLabelState.Text = "Carregando..";
-                Task.Run(() => RunAuthentication()).Wait();
-                Task.Run(() => RunPlaylist()).Wait();
-                Task.Run(() => RunSavedTrack()).Wait();                
+                if (!spotifyApi.logged)
+                {
+                    this.tspLabelState.Text = "Carregando..";
+                    Task.Run(() => RunAuthentication()).Wait();
+                    Task.Run(() => RunPlaylist()).Wait();
+                    Task.Run(() => RunSavedTrack()).Wait();
+                }
+            }
+            catch (Exception)
+            {
+                MessageBox.Show("Ocorreu um erro inesperado");
             }
         }
 

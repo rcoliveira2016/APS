@@ -18,6 +18,7 @@ C:\Users\roram\Documents\desenvolvimento\C#\APS\SpotifyAPI-NET-master\src\Conver
 C:\Users\roram\Documents\desenvolvimento\C#\APS\SpotifyAPI-NET-master\src\ConvertPlaylist.App\bin\Release\Google.Apis.Core.xml
 C:\Users\roram\Documents\desenvolvimento\C#\APS\SpotifyAPI-NET-master\src\ConvertPlaylist.App\bin\Release\Google.Apis.YouTube.v3.xml
 C:\Users\roram\Documents\desenvolvimento\C#\APS\SpotifyAPI-NET-master\src\ConvertPlaylist.App\bin\Release\Newtonsoft.Json.xml
+C:\Users\roram\Documents\desenvolvimento\C#\APS\SpotifyAPI-NET-master\src\ConvertPlaylist.App\obj\Release\ConvertPlaylist.App.csprojResolveAssemblyReference.cache
 C:\Users\roram\Documents\desenvolvimento\C#\APS\SpotifyAPI-NET-master\src\ConvertPlaylist.App\obj\Release\ConvertPlaylist.App.ExampleForm.resources
 C:\Users\roram\Documents\desenvolvimento\C#\APS\SpotifyAPI-NET-master\src\ConvertPlaylist.App\obj\Release\ConvertPlaylist.App.Properties.Resources.resources
 C:\Users\roram\Documents\desenvolvimento\C#\APS\SpotifyAPI-NET-master\src\ConvertPlaylist.App\obj\Release\ConvertPlaylist.App.View.ExportPlaylist.resources
@@ -26,4 +27,3 @@ C:\Users\roram\Documents\desenvolvimento\C#\APS\SpotifyAPI-NET-master\src\Conver
 C:\Users\roram\Documents\desenvolvimento\C#\APS\SpotifyAPI-NET-master\src\ConvertPlaylist.App\obj\Release\ConvertPlaylist.App.csproj.CoreCompileInputs.cache
 C:\Users\roram\Documents\desenvolvimento\C#\APS\SpotifyAPI-NET-master\src\ConvertPlaylist.App\obj\Release\ConvertPlaylist.App.exe
 C:\Users\roram\Documents\desenvolvimento\C#\APS\SpotifyAPI-NET-master\src\ConvertPlaylist.App\obj\Release\ConvertPlaylist.App.pdb
-C:\Users\roram\Documents\desenvolvimento\C#\APS\SpotifyAPI-NET-master\src\ConvertPlaylist.App\obj\Release\ConvertPlaylist.App.csprojResolveAssemblyReference.cache

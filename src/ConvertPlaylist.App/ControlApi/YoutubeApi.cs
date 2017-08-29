@@ -20,7 +20,7 @@ namespace ConvertPlaylist.App.ControlApi
 
         private YouTubeService youtubeService;
 
-        public async void Login()
+        public async Task<bool> Login()
         {
             string executableLocation = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
             string camilhoJson = Path.Combine(executableLocation, "./Content/client_secret.json");
@@ -43,7 +43,7 @@ namespace ConvertPlaylist.App.ControlApi
                 ApplicationName = "Convert Playlist"
             });
 
-            
+            return (youtubeService != null);
         }
 
         private async Task<string> RunSearch(string query)

@@ -68,12 +68,18 @@ namespace ConvertPlaylist.App.View
             Invoke(new SetStringCallback((string text) =>
             {
                 lblTotal.Text = text;
+                pBarPlaylist.Value = 0;
                 pBarPlaylist.Maximum = Convert.ToInt32(text);
             }), new object[] { listNameMusic.Count().ToString() });
 
-            youtube.Login();
+            var logged = await youtube.Login();
+
+            if (!logged)
+                return;
 
             var idNewPlaylist = await youtube.CreatePlaylist(name);
+
+            var url = $"https://www.youtube.com/playlist?list={idNewPlaylist}";
 
             foreach (var music in listNameMusic)
             {
@@ -81,9 +87,6 @@ namespace ConvertPlaylist.App.View
                 listCount++;
 
                 var returnAddItem = await youtube.AddItemPlaylist(idNewPlaylist, music);
-
-                var returnMusic = returnAddItem ? music : $"{music} -- não foi encontrada";
-
                 Invoke(new SetStringBoolCallback((string text, bool found) =>
                 {                      
 
@@ -93,22 +96,23 @@ namespace ConvertPlaylist.App.View
                         SubItems = { (found ? "Sim" : "Não") }
                     });
 
-                }), new object[] { returnMusic, returnAddItem });
+                }), new object[] { music, returnAddItem });
 
                 Invoke(new SetStringCallback((string text) =>
-                {
+                {                    
                     pBarPlaylist.PerformStep();
                     lblAtual.Text = text;
                 }), new object[] { listCount.ToString() });
 
             }
 
-
-            Invoke(new SetCallback(() =>
+         
+            Invoke(new SetStringCallback((string text) =>
             {
+                System.Diagnostics.Process.Start(text);
                 btnExportar.Enabled = true;
-                MessageBox.Show("Exportação concluída");
-            }));
+                MessageBox.Show("Exportação concluída ");
+            }), new object[] { url });
         }
         #endregion
 
@@ -120,7 +124,14 @@ namespace ConvertPlaylist.App.View
 
             var playlist = cbxPlaylist.SelectedItem as SimplePlaylist;
             btnExportar.Enabled = false;
-            Task.Run(() => RunCreateList(playlist.Id, txtNewPlaylist.Text, playlist.Owner.Id)).Wait();
+            try
+            {
+                Task.Run(() => RunCreateList(playlist.Id, txtNewPlaylist.Text, playlist.Owner.Id)).Wait();
+            }
+            catch (Exception)
+            {
+                MessageBox.Show("Ocorreu um erro inesperado");
+            }
         }
 
         private void cbxPlaylist_SelectedIndexChanged(object sender, EventArgs e)
